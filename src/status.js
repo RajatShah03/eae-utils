@@ -104,30 +104,32 @@ StatusHelper.prototype._update = function() {
     let _this = this;
 
     //Assign status values
-    this._data.lastUpdate = new Date();
-    this._data.ip = ip.address().toString();
-    this._data.hostname = os.hostname();
-
-    //Retrieving system information
-    this._data.system.arch = os.arch();
-    this._data.system.type = os.type();
-    this._data.system.platform = os.platform();
-    this._data.system.version = os.release();
-
-    //Retrieving memory information
-    this._data.memory.total = bytes(os.totalmem());
-    this._data.memory.free = bytes(os.freemem());
-
-    //Retrieving CPUs information
-    this._data.cpu.loadavg = os.loadavg();
-    this._data.cpu.cores = [];
-    os.cpus().forEach(function (cpu) {
-        _this._data.cpu.cores.push({
-                model: cpu.model,
-                mhz: cpu.speed
-            }
-        );
-    });
+    if(this._data) {
+        this._data.lastUpdate = new Date();
+        this._data.ip = ip.address().toString();
+        this._data.hostname = os.hostname();
+    
+        //Retrieving system information
+        this._data.system.arch = os.arch();
+        this._data.system.type = os.type();
+        this._data.system.platform = os.platform();
+        this._data.system.version = os.release();
+    
+        //Retrieving memory information
+        this._data.memory.total = bytes(os.totalmem());
+        this._data.memory.free = bytes(os.freemem());
+    
+        //Retrieving CPUs information
+        this._data.cpu.loadavg = os.loadavg();
+        this._data.cpu.cores = [];
+        os.cpus().forEach(function (cpu) {
+            _this._data.cpu.cores.push({
+                    model: cpu.model,
+                    mhz: cpu.speed
+                }
+            );
+        });
+    }
 };
 
 /**

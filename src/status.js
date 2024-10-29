@@ -154,7 +154,9 @@ StatusHelper.prototype._sync = function() {
                                                  { $set : _this._data },
                                                  { upsert: true, returnOriginal: false })
             .then(function(updatedModel) {
-                delete updatedModel.value._id;  //Remove ID field, let MongoDB handle ids
+                if (updatedModel.value && updatedModel.value._id) {
+                    delete updatedModel.value._id;  // Remove ID field, let MongoDB handle ids
+                }
                 _this._data = updatedModel.value;
                 resolve(true);
             }, function(error) {

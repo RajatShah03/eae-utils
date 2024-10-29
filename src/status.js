@@ -146,24 +146,25 @@ StatusHelper.prototype._sync = function() {
             reject(defines.errorStacker('No MongoDB collection to sync against'));
             return;
         }
-
-        let filter = { //Filter is based on ip/port combination
-            ip: _this._data.ip,
-            port: _this._data.port
-        };
-        //Updates model in base, upsert if does not exists
-        _this._statusCollection.findOneAndUpdate(filter,
-                                                 { $set : _this._data },
-                                                 { upsert: true, returnOriginal: false })
-            .then(function(updatedModel) {
-                if (updatedModel.value && updatedModel.value._id) {
-                    delete updatedModel.value._id;  // Remove ID field, let MongoDB handle ids
-                }
-                _this._data = updatedModel.value;
-                resolve(true);
-            }, function(error) {
-                reject(defines.errorStacker('Update status failed', error));
-            });
+        if(this._data) {
+            let filter = { //Filter is based on ip/port combination
+                ip: _this._data.ip,
+                port: _this._data.port
+            };
+            //Updates model in base, upsert if does not exists
+            _this._statusCollection.findOneAndUpdate(filter,
+                                                     { $set : _this._data },
+                                                     { upsert: true, returnOriginal: false })
+                .then(function(updatedModel) {
+                    if (updatedModel.value && updatedModel.value._id) {
+                        delete updatedModel.value._id;  // Remove ID field, let MongoDB handle ids
+                    }
+                    _this._data = updatedModel.value;
+                    resolve(true);
+                }, function(error) {
+                    reject(defines.errorStacker('Update status failed', error));
+                });
+        }
     });
 };
 
